@@ -62,7 +62,7 @@ class PlayerDaoImplTests {
 
     @Test
     @Order(4)
-    public void givenValidPlayerIdThenReturnPlayer() throws PlayerNotFoundException {
+    public void givenValidPlayerIdThenReturnPlayer() throws PlayerNotFoundException, FileNotFoundException {
         Player expected = playerDao.findPlayer("001");
         assertEquals(player.getPlayerId(), expected.getPlayerId(), MESSAGE_FOUR);
     }
@@ -83,9 +83,9 @@ class PlayerDaoImplTests {
     @Test
     @Order(7)
     public void givenInValidPlayerIdThenReturnNull() {
-        assertThrows(PlayerNotFoundException.class, () -> playerDao.findPlayer(""), MESSAGE_THREE);
-        assertThrows(PlayerNotFoundException.class, () -> playerDao.findPlayer("  "), MESSAGE_THREE);
-        assertThrows(PlayerNotFoundException.class, () -> playerDao.findPlayer(null), MESSAGE_THREE);
+         assertThrows(PlayerNotFoundException.class, () -> playerDao.findPlayer(""), MESSAGE_THREE);
+         assertThrows(PlayerNotFoundException.class, () -> playerDao.findPlayer("  "), MESSAGE_THREE);
+         assertThrows(PlayerNotFoundException.class, () -> playerDao.findPlayer(null), MESSAGE_THREE);
     }
     @Test
     @Order(8)

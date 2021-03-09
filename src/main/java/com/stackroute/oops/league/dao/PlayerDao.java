@@ -4,6 +4,7 @@ import com.stackroute.oops.league.exception.PlayerAlreadyExistsException;
 import com.stackroute.oops.league.exception.PlayerNotFoundException;
 import com.stackroute.oops.league.model.Player;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 public interface PlayerDao {
@@ -12,7 +13,7 @@ public interface PlayerDao {
 
     List<Player> getAllPlayers();
 
-    Player findPlayer(String playerId) throws PlayerNotFoundException;
+    Player findPlayer(String playerId) throws PlayerNotFoundException, FileNotFoundException;
 
 
 }

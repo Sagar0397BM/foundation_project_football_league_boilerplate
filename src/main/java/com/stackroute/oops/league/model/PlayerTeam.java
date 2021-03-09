@@ -8,17 +8,21 @@ import java.io.Serializable;
  */
 public class PlayerTeam implements Serializable, Comparable {
 
+    private String playerId;
+    private String teamTitle;
+    private String season;
+    private int experience;
+
+    
     //Parameterized Constructor to initialize all properties
-    public PlayerTeam(String playerId, String teamTitle) {
+  
+    public PlayerTeam(String playerId, String teamTitle, String season, int experience) {
+        this.playerId = playerId;
+        this.teamTitle = teamTitle;
+        this.season = season;
+        this.experience = experience;
     }
 
-    public String getPlayerId() {
-        return null;
-    }
-
-    public String getTeamTitle() {
-        return null;
-    }
 
     /**
      * This overridden method should return player details in below format
@@ -26,7 +30,7 @@ public class PlayerTeam implements Serializable, Comparable {
      */
     @Override
     public String toString() {
-        return null;
+        return "PlayerTeam [playerId=" + playerId + ", teamTitle=" + teamTitle + "]";
     }
 
     //Overridden compare method based on playerId
@@ -34,4 +38,7 @@ public class PlayerTeam implements Serializable, Comparable {
     public int compareTo(Object object) {
         return 0;
     }
+
+
+   
 }

@@ -1,31 +1,51 @@
 package com.stackroute.oops.league.service;
 
+import com.stackroute.oops.league.dao.PlayerDao;
+import com.stackroute.oops.league.dao.PlayerDaoImpl;
 import com.stackroute.oops.league.exception.PlayerAlreadyAllottedException;
 import com.stackroute.oops.league.exception.PlayerAlreadyExistsException;
 import com.stackroute.oops.league.exception.PlayerNotFoundException;
 import com.stackroute.oops.league.exception.TeamAlreadyFormedException;
 import com.stackroute.oops.league.model.Player;
+import com.stackroute.oops.league.model.PlayerTeam;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+
 
 /**
  * This class implements leagueTeamService
  * This has four fields: playerDao, playerTeamDao and registeredPlayerList and playerTeamSet
  */
 public class LeagueTeamServiceImpl implements LeagueTeamService {
+PlayerDao playerDao;
+PlayerDao playerTeamDao;
+Set<PlayerTeam> playerTeamSet;
+List<Player> registeredPlayerList;
 
+private static final String PLAYER_FILE_NAME = "src/main/resources/player.csv";
 
     /**
      * Constructor to initialize playerDao, playerTeamDao
      * empty ArrayList for registeredPlayerList and empty TreeSet for playerTeamSet
      */
     public LeagueTeamServiceImpl() {
-
+        playerDao= new PlayerDaoImpl();
+        registeredPlayerList = new ArrayList<Player>();
     }
 
     //Add player data to file using PlayerDao object
     @Override
     public boolean addPlayer(Player player) throws PlayerAlreadyExistsException {
+        
         return false;
     }
 
@@ -40,10 +60,12 @@ public class LeagueTeamServiceImpl implements LeagueTeamService {
      */
     @Override
     public synchronized String registerPlayerToLeague(String playerId, String password, LeagueTeamTitles teamTitle)
-            throws PlayerNotFoundException, TeamAlreadyFormedException, PlayerAlreadyAllottedException {
-
+    throws PlayerNotFoundException, TeamAlreadyFormedException, PlayerAlreadyAllottedException {
+    
         return null;
-    }
+}
+       
+        
 
     /**
      * Return the list of all registered players
