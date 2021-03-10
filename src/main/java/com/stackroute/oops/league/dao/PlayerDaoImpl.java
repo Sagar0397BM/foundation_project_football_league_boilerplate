@@ -46,15 +46,19 @@ public class PlayerDaoImpl implements PlayerDao {
             fw.append("PlayerId,");
             fw.append("Player Name,");
             fw.append("Password,");
-            fw.append("YearOfExperience");
+            fw.append("YearOfExperience,");
+             fw.append("Team Title");
             fw.append("\n");
             if (player.getPassword().length() > 6 && player.getYearExpr() > 0) {
                 fw.append(player.getPlayerId()).append(",").append(player.getPlayerName()).append(",")
-                        .append(player.getPassword()).append(",").append(String.valueOf(player.getYearExpr()));
+                .append(player.getPassword()).append(",").append(String.valueOf(player.getYearExpr())).append(",").append(player.getTeamTitle());
                 fw.close();
                 return true;
             } else
+            {
                 return false;
+            }
+                
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -65,6 +69,7 @@ public class PlayerDaoImpl implements PlayerDao {
     // Return the list of player objects by reading data from the file "player.csv"
     @Override
     public List<Player> getAllPlayers() {
+        System.out.println("mdkssssssssssss");
         File file = new File(PLAYER_FILE_NAME);
         // int i = 0;
         Player[] playerObj = new Player[500];
@@ -79,16 +84,23 @@ public class PlayerDaoImpl implements PlayerDao {
                 playerObj[j].setPlayerName(worspltdata[1]);
                 playerObj[j].setPassword(worspltdata[2]);
                 playerObj[j].setYearExpr(Integer.parseInt(worspltdata[3]));
+               
+            
+                playerObj[j].setTeamTitle((worspltdata[4]));
+        
+                System.out.println(playerObj[j].getTeamTitle()+"jkhbhbbkjbkjb");
                 // playerList=new ArrayList<Player>();
                 playerList.add(playerObj[j]);
-                for (int l = 0; l < playerList.size(); l++) {
-                    System.out.println("list are" + playerList.get(l));
-                }
                 j++;
             }
 
         } catch (IOException ie) {
             System.out.println(ie.getMessage());
+        }
+
+        
+        for (int l = 0; l < playerList.size(); l++) {
+            System.out.println("list are" + playerList.get(l));
         }
         return playerList;
     }

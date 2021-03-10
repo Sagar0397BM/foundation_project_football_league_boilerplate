@@ -81,7 +81,7 @@ public class LeagueTeamServiceImplTests {
     public void givenPlayerCredentialsWhenRegisteredThenReturnResultString() throws Exception {
         when(playerDao.getAllPlayers()).thenReturn(playerList);
         when(playerDao.findPlayer("001")).thenReturn(playerOne);
-        when(playerDao.findPlayer("002")).thenReturn(playerTwo);
+         when(playerDao.findPlayer("002")).thenReturn(playerTwo);
         String actual = leagueTeamService.registerPlayerToLeague("001", "password", LeagueTeamTitles.HIPHOP);
         assertEquals("Registered", actual, MESSAGE_REGISTERED_LIST);
         actual = leagueTeamService.registerPlayerToLeague("002", "password", LeagueTeamTitles.WIN2WIN);
@@ -124,7 +124,7 @@ public class LeagueTeamServiceImplTests {
     public void givenLeagueTeamServiceWhenPlayerRegisteredThenReturnAllRegisteredPlayers() throws Exception {
         when(playerDao.getAllPlayers()).thenReturn(playerList);
         when(playerDao.findPlayer("001")).thenReturn(playerOne);
-        leagueTeamService.registerPlayerToLeague("001", "password", LeagueTeamTitles.HIPHOP);
+         leagueTeamService.registerPlayerToLeague("001", "password", LeagueTeamTitles.HIPHOP);
         List<Player> registeredList = leagueTeamService.getAllRegisteredPlayers();
         assertThat(MESSAGE_REGISTERED_LIST, registeredList.size(), is(equalTo(1)));
         assertEquals("001", registeredList.get(0).getPlayerId(), MESSAGE_REGISTERED_LIST);

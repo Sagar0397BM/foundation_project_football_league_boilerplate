@@ -16,11 +16,13 @@ public class PlayerTeam implements Serializable, Comparable {
     
     //Parameterized Constructor to initialize all properties
   
-    public PlayerTeam(String playerId, String teamTitle, String season, int experience) {
+    public PlayerTeam(String playerId, String teamTitle) {
         this.playerId = playerId;
         this.teamTitle = teamTitle;
-        this.season = season;
-        this.experience = experience;
+    }
+
+
+    public PlayerTeam() {
     }
 
 
@@ -30,13 +32,53 @@ public class PlayerTeam implements Serializable, Comparable {
      */
     @Override
     public String toString() {
-        return "PlayerTeam [playerId=" + playerId + ", teamTitle=" + teamTitle + "]";
+        return "Player{playerId=" + playerId + ", teamTitle=" + teamTitle + "}";
     }
 
     //Overridden compare method based on playerId
     @Override
     public int compareTo(Object object) {
         return 0;
+    }
+
+
+    public String getPlayerId() {
+        return playerId;
+    }
+
+
+    public void setPlayerId(String playerId) {
+        this.playerId = playerId;
+    }
+
+
+    public String getTeamTitle() {
+        return teamTitle;
+    }
+
+
+    public void setTeamTitle(String teamTitle) {
+        this.teamTitle = teamTitle;
+    }
+
+
+    public String getSeason() {
+        return season;
+    }
+
+
+    public void setSeason(String season) {
+        this.season = season;
+    }
+
+
+    public int getExperience() {
+        return experience;
+    }
+
+
+    public void setExperience(int experience) {
+        this.experience = experience;
     }
 
 
