@@ -12,6 +12,7 @@ import com.stackroute.oops.league.model.Player;
 import com.stackroute.oops.league.model.PlayerTeam;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -88,59 +89,57 @@ public class LeagueTeamServiceImpl implements LeagueTeamService {
 
     // HIPHOP, WIN2WIN,
     // HAPPYFEET, LUCKYSTRIKE;
+    //if (playerTeamDao.getAllPlayerTeams().stream().anyMatch(s->(s.getPlayerId().equals(playerId)&&
+    //s.getTeamTitle()== null))||(!playerTeamDao.getAllPlayerTeams().stream().anyMatch(s->s.getPlayerId().equals(playerId))))
     @Override
     public synchronized String registerPlayerToLeague(String playerId, String password, LeagueTeamTitles teamTitle)
             throws PlayerNotFoundException, TeamAlreadyFormedException, PlayerAlreadyAllottedException {
         String LeagteamTitle = teamTitle.toString();
         playersList = playerDao.getAllPlayers();
         playerTeamSet = playerTeamDao.getAllPlayerTeams();
+        ArrayList<Player> searchedPlayer = new ArrayList<Player>();
+        ArrayList<Player> validityCheck = new ArrayList<Player>();
         List<PlayerTeam> playerTeamList = new ArrayList<PlayerTeam>(playerTeamSet);
-        if (playerId == null) {
+        int flag = 0;
+
+        if(playerId == null){
             throw new PlayerNotFoundException();
         }
 
-        for (int k = 0; k < playersList.size(); k++) {
-            if (!playerId.equalsIgnoreCase(playersList.get(k).getPlayerId()) || playerId.equalsIgnoreCase(" ")) {
-                throw new PlayerNotFoundException();
-            } else if (!password.equalsIgnoreCase(playersList.get(k).getPassword())) {
+        for (int i = 0; i < playersList.size(); i++) {
+            if( !password.equalsIgnoreCase(playersList.get(i).getPassword())){
                 return "Invalid credentials";
-            } 
-
-            else {
-                System.out.println(LeagteamTitle + "- " + playerId + " -" + password);
-                // String myRegPlayer = registerThePlayer(LeagteamTitle, playerTeamList, playerId, password,playersList);
-                for(int i=0;i<playersList.size();i++){
-                    if(playerId.equalsIgnoreCase(playersList.get(i).getPlayerId())){
-                        playersList.get(i).setTeamTitle(LeagteamTitle);
-                        registeredPlayerList.add(playersList.get(i));
-                        addPlayer(playersList.get(i));
-                         System.out.println(playersList);
-                        return "Registered";
-                        
-                    }
             }
         }
-    }
-    return null;
-    }
+        for (int k = 0; k < playersList.size(); k++) {
+            if (!playerId.equalsIgnoreCase(playersList.get(k).getPlayerId()) || playerId.equalsIgnoreCase(" ") ) {
+                flag=1;
+            }
+            else{
+                if (playerId.equalsIgnoreCase(playersList.get(k).getPlayerId())
+                && playersList.get(k).getTeamTitle() == null){
+            playersList.get(k).setTeamTitle(LeagteamTitle);
+            registeredPlayerList.add(playersList.get(k));
+            System.out.println(playersList);
+            return "Registered";
 
-    private String registerThePlayer(String LeagteamTitle, List<PlayerTeam> playerTeamList, String playerId,
-            String password, List<Player> playersList) throws PlayerAlreadyAllottedException {
-                List<PlayerTeam> allplayerTeamList = new ArrayList<PlayerTeam>(playerTeamSet);
-                System.out.println(playersList);
-                for(int i=0;i<playersList.size();i++){
-                    if(playerId.equalsIgnoreCase(playersList.get(i).getPlayerId())){
-                        playersList.get(i).setTeamTitle(LeagteamTitle);
-                        // allplayerTeamList.get(i).setTeamTitle(LeagteamTitle);
-                        // System.out.println(allplayerTeamList);
-                        registeredPlayerList.add(playersList.get(i));
-                        // System.out.println(playersList);
-                        return "Registered";
-                        
-                    }
-                  
-                    addPlayer((Player)playersList.get(i));
-                }
+        }
+        else{
+            return "Players allotted to teams";
+        }
+            }
+           
+        }
+
+        if(flag==1){
+        throw new PlayerNotFoundException();
+        }
+
+
+        if (playersList.size() == 0) {
+            return null;
+        }
+
         return null;
     }
 
@@ -179,15 +178,47 @@ public class LeagueTeamServiceImpl implements LeagueTeamService {
     @Override
     public String allotPlayersToTeam(String adminName, String password, LeagueTeamTitles teamTitle)
             throws TeamAlreadyFormedException, PlayerNotFoundException {
+        if (adminName.equals(AdminCredentials.admin) && password.equals(AdminCredentials.password)) {
+            List<Player> allregPlayers = new ArrayList<Player>();
+            int flag = 0;
+            allregPlayers = getAllRegisteredPlayers();
+            if (allregPlayers.size() == 0) {
+                return "No player is registered";
+            }
+            for (int i = 0; i < allregPlayers.size(); i++) {
+                if (allregPlayers.get(i).getPlayerId().equalsIgnoreCase(registeredPlayerList.get(i).getPlayerId())
+                        && allregPlayers.get(i).getTeamTitle() != null) {
+                    flag = 1;
+                    method1(allregPlayers);
+                }
+            }
 
-        if (adminName.equalsIgnoreCase(AdminCredentials.admin)
-                && password.equalsIgnoreCase(AdminCredentials.password)) {
-
+            if (flag == 1) {
+                return "Players allotted to teams";
+            }
 
         } else {
             return "Invalid credentials for admin";
         }
         return null;
+    }
+
+    public void method1(List<Player> player) {
+
+        try {
+            FileWriter fw = new FileWriter("src/main/resources/finalteam.csv");
+            BufferedWriter bw = new BufferedWriter(fw);
+            for (Player p : player) {
+                PlayerTeam playerTeam = new PlayerTeam(p.getPlayerId(), p.getTeamTitle());
+                bw.append(playerTeam.toString() + "\n");
+            }
+            bw.close();
+            fw.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

@@ -21,7 +21,7 @@ import java.util.TreeSet;
 public class PlayerTeamDaoImpl implements PlayerTeamDao {
     private static final String TEAM_FILE_NAME = "src/main/resources/finalteam.csv";
 
-    private static final String PLAYER_FILE_NAME = "src/main/resources/player.csv";
+    // private static final String PLAYER_FILE_NAME = "src/main/resources/player.csv";
 
     String playerTeamSet;
     PlayerDao playerDao;
@@ -82,33 +82,27 @@ public class PlayerTeamDaoImpl implements PlayerTeamDao {
     // Add the given PlayerTeam Object to finalteam.csv file
     @Override
     public boolean addPlayerToTeam(Player player) throws PlayerNotFoundException {
-
-        List<Player> playersList = playerDao.getAllPlayers();
-
-
-        for (int i = 0; i < playersList.size(); i++) {
-            if (player.getPlayerId().equalsIgnoreCase(playersList.get(i).getPlayerId())) {
-                PlayerTeam playerTeam = new PlayerTeam();
+    PlayerTeam playerTeam = new PlayerTeam(player.getPlayerId(),player.getTeamTitle());
                 try {
                     FileWriter fw = new FileWriter(TEAM_FILE_NAME);
                     fw.append("PlayerId,");
                     fw.append("Team Title,");
-                    fw.append("Season,");
-                    fw.append("YearOfExperience");
-                    fw.append("\n");
-                    fw.append(playerTeam.getPlayerId()).append(",").append(playerTeam.getTeamTitle()).append(",")
-                            .append(playerTeam.getSeason()).append(",")
-                            .append(String.valueOf(playerTeam.getExperience()));
+                    // fw.append("Season,");
+                    // fw.append("YearOfExperience");
+                    fw.append("\n");        
+                    fw.append(playerTeam.getPlayerId()).append(",").append(playerTeam.getTeamTitle()).append(",");
+                            // .append(playersList.getSeason()).append(",")
+                            // .append(String.valueOf(playerTeam.getExperience()));
+                    
                     fw.close();
                     return true;
 
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
                 }
-            } else {
-                return false;
-            }
-        }
+            
+            
+        
 
         return false;
 
@@ -130,9 +124,8 @@ public class PlayerTeamDaoImpl implements PlayerTeamDao {
                 playerTeamObj[j] = new PlayerTeam();
                 playerTeamObj[j].setPlayerId(worspltdata[0]);
                 playerTeamObj[j].setTeamTitle(worspltdata[1]);
-                playerTeamObj[j].setSeason(worspltdata[2]);
-                playerTeamObj[j].setExperience(Integer.parseInt(worspltdata[3]));
-                // playerList=new ArrayList<Player>();
+                // playerTeamObj[j].setSeason(worspltdata[2]);
+                // playerTeamObj[j].setExperience(Integer.parseInt(worspltdata[3]));
                 playerList.add(playerTeamObj[j]);
                 j++;
             }
