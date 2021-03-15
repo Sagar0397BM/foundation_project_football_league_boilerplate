@@ -89,58 +89,46 @@ public class LeagueTeamServiceImpl implements LeagueTeamService {
 
     // HIPHOP, WIN2WIN,
     // HAPPYFEET, LUCKYSTRIKE;
-    //if (playerTeamDao.getAllPlayerTeams().stream().anyMatch(s->(s.getPlayerId().equals(playerId)&&
-    //s.getTeamTitle()== null))||(!playerTeamDao.getAllPlayerTeams().stream().anyMatch(s->s.getPlayerId().equals(playerId))))
-    @Override
+    // if
+    // (playerTeamDao.getAllPlayerTeams().stream().anyMatch(s->(s.getPlayerId().equals(playerId)&&
+    // s.getTeamTitle()==
+    // null))||(!playerTeamDao.getAllPlayerTeams().stream().anyMatch(s->s.getPlayerId().equals(playerId))))
+
     public synchronized String registerPlayerToLeague(String playerId, String password, LeagueTeamTitles teamTitle)
             throws PlayerNotFoundException, TeamAlreadyFormedException, PlayerAlreadyAllottedException {
-        String LeagteamTitle = teamTitle.toString();
-        playersList = playerDao.getAllPlayers();
-        playerTeamSet = playerTeamDao.getAllPlayerTeams();
-        ArrayList<Player> searchedPlayer = new ArrayList<Player>();
-        ArrayList<Player> validityCheck = new ArrayList<Player>();
-        List<PlayerTeam> playerTeamList = new ArrayList<PlayerTeam>(playerTeamSet);
-        int flag = 0;
-
-        if(playerId == null){
-            throw new PlayerNotFoundException();
-        }
-
-        for (int i = 0; i < playersList.size(); i++) {
-            if( !password.equalsIgnoreCase(playersList.get(i).getPassword())){
-                return "Invalid credentials";
-            }
-        }
-        for (int k = 0; k < playersList.size(); k++) {
-            if (!playerId.equalsIgnoreCase(playersList.get(k).getPlayerId()) || playerId.equalsIgnoreCase(" ") ) {
-                flag=1;
-            }
-            else{
-                if (playerId.equalsIgnoreCase(playersList.get(k).getPlayerId())
-                && playersList.get(k).getTeamTitle() == null){
-            playersList.get(k).setTeamTitle(LeagteamTitle);
-            registeredPlayerList.add(playersList.get(k));
-            System.out.println(playersList);
-            return "Registered";
-
-        }
-        else{
-            return "Players allotted to teams";
-        }
-            }
-           
-        }
-
-        if(flag==1){
-        throw new PlayerNotFoundException();
-        }
-
-
-        if (playersList.size() == 0) {
+        List<Player> players = playerDao.getAllPlayers();
+        if (players.isEmpty()) {
             return null;
         }
-
+        Player p;
+        try {
+            p = playerDao.findPlayer(playerId);
+            if (p == null) {
+                throw new PlayerNotFoundException();
+            }
+            if (p.getPassword().equals(password)) {
+                playerTeamSet = playerTeamDao.getAllPlayerTeams();
+                PlayerTeam playerTeam = new PlayerTeam(p.getPlayerId(), p.getTeamTitle());
+                if (playerTeamSet.contains(playerTeam)) {
+                    throw new PlayerAlreadyAllottedException();
+                }
+                if (playerTeamDao.getPlayerSetByTeamTitle(teamTitle.name()).size() < 11) {
+                    p.setTeamTitle(teamTitle.name());
+                    registeredPlayerList.add(p);
+                    playerTeamSet.add(new PlayerTeam(playerId, teamTitle.name()));
+                    return "Registered";
+                } else {
+                    throw new TeamAlreadyFormedException();
+                }
+            } else {
+                return "Invalid credentials";
+            }
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
         return null;
+       
     }
 
     /**
@@ -178,29 +166,57 @@ public class LeagueTeamServiceImpl implements LeagueTeamService {
     @Override
     public String allotPlayersToTeam(String adminName, String password, LeagueTeamTitles teamTitle)
             throws TeamAlreadyFormedException, PlayerNotFoundException {
-        if (adminName.equals(AdminCredentials.admin) && password.equals(AdminCredentials.password)) {
-            List<Player> allregPlayers = new ArrayList<Player>();
-            int flag = 0;
-            allregPlayers = getAllRegisteredPlayers();
-            if (allregPlayers.size() == 0) {
+
+        if (AdminCredentials.admin.equals(adminName) && AdminCredentials.password.equals(password)) {
+            List<Player> playerList = playerDao.getAllPlayers();
+            if (playerList.isEmpty()) {
                 return "No player is registered";
             }
-            for (int i = 0; i < allregPlayers.size(); i++) {
-                if (allregPlayers.get(i).getPlayerId().equalsIgnoreCase(registeredPlayerList.get(i).getPlayerId())
-                        && allregPlayers.get(i).getTeamTitle() != null) {
-                    flag = 1;
-                    method1(allregPlayers);
+            int count = 0;
+            for (Player player : playerList) {
+                if (player.getTeamTitle() == null)
+                    continue;
+                if (player.getTeamTitle().equalsIgnoreCase(teamTitle.name())) {
+                    count++;
                 }
             }
-
-            if (flag == 1) {
-                return "Players allotted to teams";
+            if (count >= 11)
+                throw new TeamAlreadyFormedException();
+            for (Player player : playerList) {
+                if (player.getTeamTitle() == null) {
+                    player.setTeamTitle(teamTitle.name());
+                    playerTeamDao.addPlayerToTeam(player);
+                }
             }
-
+            return "Players allotted to teams";
         } else {
             return "Invalid credentials for admin";
         }
-        return null;
+        // if (adminName.equals(AdminCredentials.admin) &&
+        // password.equals(AdminCredentials.password)) {
+        // List<Player> allregPlayers = new ArrayList<Player>();
+        // int flag = 0;
+        // allregPlayers = getAllRegisteredPlayers();
+        // if (allregPlayers.size() == 0) {
+        // return "No player is registered";
+        // }
+        // for (int i = 0; i < allregPlayers.size(); i++) {
+        // if
+        // (allregPlayers.get(i).getPlayerId().equalsIgnoreCase(registeredPlayerList.get(i).getPlayerId())
+        // && allregPlayers.get(i).getTeamTitle() != null) {
+        // flag = 1;
+        // method1(allregPlayers);
+        // }
+        // }
+
+        // if (flag == 1) {
+        // return "Players allotted to teams";
+        // }
+
+        // } else {
+        // return "Invalid credentials for admin";
+        // }
+        // return null;
     }
 
     public void method1(List<Player> player) {
